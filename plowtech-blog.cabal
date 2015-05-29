@@ -37,6 +37,7 @@ executable plowtech-blog-exec
                       , binary
                       , filepath
                       , directory
+                      , s3-simple
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
