@@ -1,0 +1,11 @@
+title: Post Title
+author: Someone Somewhere
+created: 2015-05-12
+description: >
+    A simple post that should
+    act as an example for
+    other posts to be this should be old
+tags:
+    - Haskell
+    - Javascript
+    - GHCJS
