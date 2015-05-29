@@ -21,4 +21,3 @@ deployment:
      branch: master
      commands:
        - cabal run build
-           timeout: 3000
