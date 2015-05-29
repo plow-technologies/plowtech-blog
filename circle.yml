@@ -14,7 +14,7 @@ dependencies:
   override:
     - cabal update
     - cabal sandbox init
-    - cabal install --dependencies-only -j2
+    - cabal install --dependencies-only -j2 --enable-tests
 
 deployment:
    staging:
