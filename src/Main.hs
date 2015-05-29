@@ -35,9 +35,14 @@ postWriterOptions = def {
                       writerHighlight = False
                     , writerStandalone = False
                     }
+
+hakyllConfiguration :: Configuration
+hakyllConfiguration = def {
+                        deployCommand = "./publish.sh"
+                      }
 main :: IO ()
 main = do
-  hakyll $ do
+  hakyllWith hakyllConfiguration $ do
     match "templates/*" $ compile templateCompiler
     match "css/*" $ do
       route idRoute
