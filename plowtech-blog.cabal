@@ -27,7 +27,6 @@ executable plowtech-blog-exec
                       , plowtech-blog
                       , hakyll
                       , pandoc
-                      , highlighting-kate
                       , yaml
                       , time
                       , aeson
