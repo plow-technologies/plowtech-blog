@@ -1,21 +1,31 @@
 # plowtech-blog
 
-TODO: Write description here
+Static blog built using Hakyll
 
 ## Installation
 
-TODO: Write installation instructions here
+```
+cabal sandbox init
+cabal configure
+cabal install
+```
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## How to run tests
-
+For development you can use
 ```
-cabal configure --enable-tests && cabal build && cabal test
+cabal run watch
 ```
 
-## Contributing
+or
 
-TODO: Write contribution instructions here
+```
+cabal run build
+```
+
+
+to clean the cache run
+
+```
+cabal run clean
+```
