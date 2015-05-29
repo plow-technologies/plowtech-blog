@@ -2,7 +2,7 @@ machine:
   pre:
     - sudo apt-get update
     - sudo apt-get install libzip-dev
-    - pip install awscli
+    - sudo pip install awscli
   services:
   ghc:
     version: 7.8.3
