@@ -137,5 +137,73 @@ free(fcopy);
 Another important point is that FFI does not support arbitrary pass by value for Haskell storable types. You cannot define a type in Haskell and pass it directly to C. 
 
 You can only pass the following Haskell types from Haskell to C: 
-Int, Word, Char, Float, Double, Addr, ForeignPtr, StablePtr, MutableByteArray, and ByteArray.
+Int, Float, Double, Word, Addr, ForeignPtr, StablePtr, ByteArray and MutableByteArray.
 
+Now let's do something a little more interesting: create a struct that has a pointer to a struct and they will all be set in Haskell (additional code added to the files above, let's just look at the new code).
+
+###foo.c
+```c
+typedef struct {
+  int     a;
+  double  b;
+  char   *c;
+} foo;
+
+typedef struct {
+  foo    *f;
+  char   *g;
+} bar;
+```
+
+###HsFoo.hsc
+```haskell
+data Bar = Bar {
+    f :: Ptr Foo
+  , g :: CString
+} deriving Show 
+
+instance Storable Bar where
+    sizeOf    _ = #{size bar}
+    alignment _ = #{alignment bar}
+    
+    poke p bar = do
+        #{poke bar, f} p $ f bar
+        #{poke bar, g} p $ g bar
+
+    peek p = return Bar
+              `ap` (#{peek bar, f} p)
+              `ap` (#{peek bar, g} p)
+
+foreign export ccall "setBar" setBar :: Ptr Bar -> IO ()
+setBar :: Ptr Bar -> IO ()
+setBar b = do
+  alloca $ \f -> do
+    newC <- newCString "Hello from Bar's foo pointer, set in Haskell!"
+    poke f $ Foo 5 1.2345 newC
+    newG <- newCString "Hello from g!"
+    poke b $ Bar f newG
+    return ()
+```
+
+Notice that the `foo *` from C matches `Ptr Foo` in Haskell. In `setBar`, we create a new `Ptr Foo` with `alloca`. `alloca` creates a pointer that Haskell will free. We do not have to call `freePointerSetInHaskell` from C on the foo pointer in bar. 
+
+###main.c
+```c
+hs_init(&argc, &argv);
+  
+bar *bs[10];
+for (int i = 0; i < 10; i++) {
+  bs[i] = malloc(sizeof(bar));
+  setBar(bs[i]);
+}
+
+for (int i = 0; i < 10; i++) {
+  printf("bar has been set in Haskell:\n \n  f->a: %d\n  f->b: %f\n  f->c: %s\n  g: %s\n\n",bs[i]->f->a,bs[i]->f->b,bs[i]->f->c,bs[i]->g);  
+  freePointerSetInHaskell(bs[i]->g);
+  freePointerSetInHaskell(bs[i]->f->c);
+  free(bs[i]);
+}
+  
+hs_exit();
+```
+In this example I decided to create an array of bar pointers. First we malloc each pointer and then set it in Haskell. Afterwards, we print the value and then free `bar->g` and `bar->foo->c` in Haskell, both char arrays set in Haskell and free `bar` in C because we called malloc in C. Remember that we do not need to free `bar->foo` because we used `alloca`. Haskell will be responsible for freeing it.
