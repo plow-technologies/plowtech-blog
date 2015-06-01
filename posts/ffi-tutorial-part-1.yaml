@@ -2,11 +2,9 @@ title: FFI Tutorial Part 1 - Mutate C Values in Haskell
 author: James M.C. Haver II
 created: 2015-31-05
 description: >
-    A simple C program that sends an Int, a Double and 
-    a String to Haskell. Haskell mutates the values and
-    C tells Haskell to free the String pointer before 
-    ending the Haskell pointer. Includes instructions 
-    on how to compile all the files.
+    A simple C program that sends an Int to Haskell. 
+    Haskell mutates the values and receives an Int 
+    from Haskell.
 tags:
     - C
     - Haskell    

@@ -1,0 +1,12 @@
+title: FFI Tutorial Part 2 - Mutate C Structs in Haskell
+author: James M.C. Haver II
+created: 2015-06-01
+description: >
+    A simple C program that sends a C Struct of Int, Double 
+    and Char pointer to Haskell. Haskell mutates the values and
+    C tells Haskell to free the String pointer before 
+    freeing the Haskell pointer.
+tags:
+    - C
+    - Haskell    
+    - FFI
