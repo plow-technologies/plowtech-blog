@@ -6,8 +6,11 @@ Visual Studio-like style based on original C# coloring by Jason Diamond <jason@d
 .hljs {
   display: block;
   overflow-x: auto;
-  padding: 0.5em;
+  padding: 0.7em;
   background: white;
+  border-style: solid;
+  border-color: #AAA;
+  border-width: 1px;
   color: black;
   -webkit-text-size-adjust: none;
 }
