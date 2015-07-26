@@ -135,6 +135,9 @@ h3 {
     .post-category-js {
         background: #df2d4f;
     }
+    .post-category-lowlevel {
+        background: #815600;
+    }
 
 .post-images {
     margin: 1em 0;
