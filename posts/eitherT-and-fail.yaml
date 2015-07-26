@@ -1,0 +1,8 @@
+title: Using EitherT to factor out fail
+author: Scott Murphy
+created: 2015-07-26
+description: >
+ Use EitherT to remove fail from recursive functions
+tags:
+    - Haskell    
+    - Markdown
