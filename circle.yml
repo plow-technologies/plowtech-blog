@@ -16,7 +16,7 @@ dependencies:
   override:
     - cabal update
     - cabal sandbox init
-    - cabal install --dependencies-only -j2 --no-upgrade-dependencies --enable-tests --constraint=hslua==installed
+    - cabal install --dependencies-only -j2 --no-upgrade-dependencies --enable-tests --constraint=hslua-installed
 
 deployment:
    aws:
