@@ -17,25 +17,27 @@ Library
   Exposed-Modules:      Plowtech
   Other-Modules:        Plowtech.Internal
   Build-Depends:        base >= 4 && < 5
+                      , monads-tf >= 0.1.0.2
 
 executable plowtech-blog-exec
   Default-Language:     Haskell2010
   HS-Source-Dirs:       src
   GHC-Options:          -Wall
   main-is:              Main.hs
-  Build-Depends:        base >= 4 && < 5
-                      , plowtech-blog
-                      , hakyll == 4.6.9.0
-                      , pandoc == 1.13.2.1
-                      , yaml == 0.8.11
-                      , time == 1.4.2
-                      , aeson
-                      , text == 1.2.0.6
+  Build-Depends:        aeson
+                      , base >= 4 && < 5
+                      , binary >= 0.7.1.0
+                      , bytestring >= 0.10.4.0
+                      , directory >= 1.2.1.0
+                      , filepath >= 1.3.0.2
+                      , hakyll >= 4.6.9.0
+--                      , monads-tf >= 0.1.0.2
                       , mtl
-                      , bytestring == 0.10.4.0
-                      , binary == 0.7.1.0
-                      , filepath == 1.3.0.2
-                      , directory == 1.2.1.0
+                      , pandoc >= 1.13.2.1
+                      , plowtech-blog
+                      , text >= 1.2.0.6
+                      , time >= 1.4.2
+                      , yaml >= 0.8.11
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
@@ -46,6 +48,7 @@ Test-Suite spec
   Main-Is:              Spec.hs
   Build-Depends:        base
                       , hspec
+                      , monads-tf >= 0.1.0.2
 
 Source-Repository head
   Type:                 git

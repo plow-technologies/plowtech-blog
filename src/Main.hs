@@ -6,9 +6,9 @@
 
 module Main where
 
-import           Control.Applicative
+-- import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Error
+import           Control.Monad.Except  (throwError)
 import           Data.Aeson
 import           Data.Binary
 import qualified Data.ByteString.Lazy  as BL
@@ -135,7 +135,8 @@ postCompiler :: Compiler (Item Post)
 postCompiler = do
   fp <- getResourceFilePath
   postConf <- load $ fromFilePath $ Prelude.drop 2 $ replaceExtension fp "yaml"
-  renderedPost <- renderPandocWith postReaderOptions postWriterOptions <$> getResourceString
+  compilerRenderedPost <- renderPandocWith postReaderOptions postWriterOptions <$> getResourceString
+  renderedPost <- compilerRenderedPost
   makeItem $ fromPostConfig (itemBody postConf) (itemBody renderedPost)
 
 
