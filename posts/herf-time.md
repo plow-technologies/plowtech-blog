@@ -6,7 +6,7 @@ Implementing your own herf instance
 time manipulation in haskell.
 
 It is designed to be used to manipulate time stamps in an intuitive way across multiple
-time stamp kinds.
+time stamp Types.
 
 I based it loosely on the [Kerf](https://github.com/kevinlawler/kerf) programming language.
 
@@ -176,7 +176,7 @@ pico = HerfPico
 
 
 herfShow :: FormatTime t => t -> String
-herfShow = formatTime defaultTimeLocale (iso8601DateFormat (Just "%H:%M:%S:%Z") )  -- i.e. YYYY-MM-DDTHH:MM:SS
+herfShow = formatTime defaultTimeLocale (iso8601DateFormat (Just "%H:%M:%S:%Z") )  -- i.e. YYYY-MM-DDTHH:MM:SS:Z
 ```
 
 
