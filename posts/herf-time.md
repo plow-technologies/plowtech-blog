@@ -55,9 +55,10 @@ UTCHerfTime 2016-07-22 04:23:01.000000000001 UTC
 ```
 
 ### Use HerfTime.ZonedTime to convert easily between times
+``` haskell
 (reherf $ ( dateTime 2016 01 01 01 01 01 :: HerfZonedTime "CST")) :: HerfZonedTime "PST"
 2015-12-31T23:01:01:PST
-
+```
 # The Bad 
 
 * This library is really using typeclasses in a very OO way, I can dress it up and call it "final encoding".
