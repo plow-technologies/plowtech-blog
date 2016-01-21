@@ -1,11 +1,14 @@
 machine:
   pre:
     - sudo apt-get update
+    - sudo apt-get install gcc-4.8
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
+    - gcc --version
     - sudo apt-get install libzip-dev
     - sudo pip install awscli
   services:
   ghc:
-    version: 7.8.3
+    version: 7.10.2
 
 dependencies:
   cache_directories:
@@ -16,7 +19,7 @@ dependencies:
   override:
     - cabal update
     - cabal sandbox init
-    - cabal install --dependencies-only -j2 --enable-tests
+    - cabal install --dependencies-only -j2 --no-upgrade-dependencies --enable-tests
 
 deployment:
    aws:
