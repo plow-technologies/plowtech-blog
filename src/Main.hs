@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable  #-}
 {-# LANGUAGE DeriveGeneric       #-}
 {-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE OverloadedLists     #-}
 {-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -15,6 +16,7 @@ import qualified Data.ByteString.Lazy  as BL
 import           Data.Function
 import           Data.List
 import           Data.Monoid
+import qualified Data.Set              as Set
 import           Data.Text             hiding (reverse)
 import           Data.Text.Read
 import           Data.Time.Calendar
@@ -27,7 +29,7 @@ import           Text.Pandoc
 
 postReaderOptions :: ReaderOptions
 postReaderOptions = def {
-                      readerExtensions=githubMarkdownExtensions
+                      readerExtensions=githubMarkdownExtensions `Set.difference` [ Ext_hard_line_breaks ]
                     }
 
 postWriterOptions :: WriterOptions
