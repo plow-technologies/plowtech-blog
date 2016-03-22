@@ -1,0 +1,12 @@
+title: Groundhog and Converters Tutorial
+author: Edward Amsden
+created: 2016-03-18
+description: >
+    A tutorial on the Groundhog relational model library and its converter functionality.
+tags:
+    - Haskell
+    - Groundhog
+    - SQL
+    - Template Haskell
+    - databases
+    - Sqlite
