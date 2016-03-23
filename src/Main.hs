@@ -65,6 +65,9 @@ main = do
       route $ setExtension "html"
       compile $ postCompiler
                 >>= loadAndApplyTemplate "templates/post.html" postContext
+    match "posts/*.gif" $ do
+      route idRoute
+      compile $ copyFileCompiler
     create ["index.html"] $ do
       route idRoute
       compile compileMain
