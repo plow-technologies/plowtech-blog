@@ -7,6 +7,8 @@ This tutorial should translate readily to other SQL databases, but we've only te
 Sqlite is ideal for local applications or microservices where you don't need to share data via the database with other processes.
 It's a widely used persistence backend in its own right, used by Android, Firefox, OS X, and Chrome, among many other projects.
 
+This tutorial focuses on the converters functionality, and is not intended to replace the main [Groundhog tutorial](https://www.schoolofhaskell.com/user/lykahb/groundhog).
+
 # Example Application
 Our business at Plow Technologies is automation and monitoring.
 But sometimes it's our hobby too.
@@ -179,7 +181,77 @@ For the field `sumpPumpState`, though, we must specify a converter.
 
 ## Entities
 Entities roughly correspond to tables. (Tables multiply when polymorphism or multiple constructors come into play.)
-When an entity, we can specify how to embed the columns for fields whose types are embedded and give converters for fields.
-Within an embedded definition or entity definition, a converter's output type may have `[A]` as a target if `A` is an embedded type.
-Tuples are embedded, and lists and tuple embeddings compose.
+Entities have keys which are used to reference values in the table.
+Groundhog will automatically define an autoincremented key for an entity, but if there is already a unique value, we can use that instead.
+In the case of our SumpPoll entity, we use the timestamp:
 
+```yaml
+- entity: SumpPoll
+  - autoKey: null
+  - keys:
+    - name: SumpPollConstraint
+      type: primary
+      default: true
+```
+
+Two things to note: First, even if we specify our own key, we must manually disable the `autoKey` functionality.
+Second, we haven't said which field(s) to use for our primary key, just that it's a primary key.
+The `name` of this key is important, we'll be using it later to pick out fields on a per-constructor basis.
+Since entities can have multiple constructors, we must define each one. `SumpPoll` has just one, and we now specify its fields:
+
+```yaml
+  - constructor: SumpPoll
+    fields:
+      - name: sumpPollTimestamp
+      - name: sumpPumpWaterLevelSwitches
+      - name: sumpPumpInstruments
+        embeddedType:
+          - name: sumpPumpState
+          - name: sumpPumpCurrentDraw
+          - name: sumpPumpFlow
+```
+
+The `embeddedType` section lets us define how the the columns for `SumpInstruments` type are included in the `SumpPoll` table.
+
+Now we can specify the constraint to be used for the SumpPoll primary key with this constructor:
+
+```yaml
+    uniques:
+      - name: SumpPollConstraint
+        fields: sumpPollTimestamp
+```
+
+Note that the `name` for the constraint matches the `name` for the key above.
+This specifies that when a `SumpPoll` whose constructor is `SumpPoll` is stored, the `sumpPollTimestamp` field must be unique and is used as the key.
+
+We've defined the database model for our types, so we can close the quasiquoter now:
+
+```haskell
+|]
+```
+
+![Phew](kirk-relief.gif) 
+
+Now we need to define the converters we mentioned above.
+As previously discussed, converters are pairs of functions, one to go from the type we're converting to the type stored in the DB, and the other to go back.
+
+```haskell
+ampsConverter :: (Amps -> Float, Float -> Amps)
+ampsConverter = (unAmps, Amps)
+
+gallonsPerMinuteConverter :: (GallonsPerMinute -> Float, Float -> GallonsPerMinute)
+gallonsPerMinuteConverter = (unGallonsPerMinute, GallonsPerMinute)
+
+pumpToggleConverter :: (PumpToggle -> Bool, Bool -> PumpToggle)
+pumpToggleConverter = (pumpBool, boolPump)
+  where
+    pumpBool PumpOn = True
+    pumpBool PumpOff = False
+    boolPump True = PumpOn
+    boolPump False = PumpOff
+```
+
+That's it! We've now got a database model for our Haskell types.
+Now we can move on to actually store some things in a database.
+
+# Connections and Queries
