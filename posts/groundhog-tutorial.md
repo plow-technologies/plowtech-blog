@@ -18,7 +18,7 @@ To combat this, the author has dug a pit in the floor and lowered a submersible 
 The sump pump quickly empties the pit of water, thus removing groundwater before it can reach the level of the floor.
 However, the pump can be damaged by leaving it to run unsubmerged, as it will overheat.
 
-Instead of keeping one eye always on the pit to see when the pump should be plugged in, your friendly author is rigging an automation system.
+Instead of keeping one eye always on the pit to see when the pump should be plugged in, your friendly author is rigging an automation system (It's not done yet, thus the lack of a code link).
 The simple but boring way would be to rig a float switch (which closes when water reaches a certain level) to a relay which would switch the pump on and off.
 The fun way is to connect a couple of float switches (one for the high water mark at which we start pumping, and one for the low water mark at which the pump is switched off) to a Raspberry Pi.
 The automation system on the Pi will, of course, be written in Haskell.
@@ -27,11 +27,6 @@ It will provide not just automation for the pump, but remote manual control, mon
 We need a way to store these measurements and the logs of the pump being engaged or disengaged.
 The automation system polls the state of both float switches every second, and sets the state of the pump accordingly.
 Independently, it also polls the flow meter and current meter.
-
-We also need to store some configuration information.
-We might attach several float switches to get an idea of the water level beyond high-water and low-water.
-We'd like to log the state of all these switches, but select which one engages the pump and which disengages it.
-And of course, we need to store authentication information.
 
 # Haskell Types
 
@@ -232,6 +227,8 @@ We've defined the database model for our types, so we can close the quasiquoter 
 
 ![Phew](kirk-relief.gif) 
 
+## Converters
+
 Now we need to define the converters we mentioned above.
 As previously discussed, converters are pairs of functions, one to go from the type we're converting to the type stored in the DB, and the other to go back.
 
@@ -255,3 +252,70 @@ That's it! We've now got a database model for our Haskell types.
 Now we can move on to actually store some things in a database.
 
 # Connections and Queries
+
+Groundhog doesn't just define our database model, it provides a database-independent set of Haskell functions to store and query the data.
+
+We'll just use a few of these functions to give you an idea of how to get started. The main [Groundhog tutorial](https://www.schoolofhaskell.com/user/lykahb/groundhog) is an excellent reference for how to store and query data.
+
+Let's write the polling function. Here we're in the middle of the main module for the controller:
+
+```haskell
+module Main where
+
+import Sump.DB
+import Sump.Interface
+import Sump.Types
+import qualified Data.IntMap as IntMap
+import Database.Groundhog
+import Database.Groundhog.Sqlite
+
+...
+```
+
+The polling function looks at the motor state and the instruments (flow meter, current meter, float switches), logs the data, and returns what the motor state should be.
+
+```haskell
+poll :: Sqlite -> SumpM (Maybe SumpToggle)
+poll sqlite = do
+  flowRate <- GallonsPerMinute <$> getFlowRate
+  current <- Amps <$> getMotorCurrent
+  switches <- getSwitchStates
+  sumpState <- getSumpState
+  time <- getCurrentTime
+  (liftIO $ flip runDbConn sqlite $ insertBy SumpPollConstraint $ SumpPoll time switches $ SumpInstruments sumpState current flowRate)
+    >>= either
+        (const $ throwError $ "Timestamp" ++ show time ++ " already logged")
+        (const $ return ())
+  return $ do
+    lowerSwitch <- IntMap.lookup switches 1
+    upperSwitch <- IntMap.lookup switches 2
+    if lowerSwitch && upperSwitch
+      then Just SumpOn
+      else if not (lowerSwitch || upperSwitch)
+           then Just SumpOff
+           else Nothing
+```
+
+The `insertBy` function takes a constraint constructor (named by the constraint name given in the definition of the key) and a value to insert in to the database.
+A `Left` result indicates the key was already present, while a `Right` indicates it was not already present and that the value was successfully inserted. The `runDbConn` function brackets a transaction already present and that the value was successfully inserted. The `runDbConn` function brackets a transaction.
+
+Let's also take a look at querying.
+We're using [Servant] as our web framework, which makes it very easy to write request handlers.
+Here's the handler for accessing the last logged state at a provided time:
+
+```haskell
+lastLoggedState :: Sqlite -> UTCTime -> EitherT ServantErr IO SumpPoll
+lastLoggedState sqlite time = do
+  sumpPolls <- runDbConn $ select $ (SumpPollTimestampField <=. time) `limitTo` 1
+  case sumpPolls of
+    [] -> left $ err404
+    (poll : _) -> right $ poll
+```
+
+Note that the input to `select` is an expression whose type determines the table queried.
+In this expression, the type is fixed by the use of `SumpPollTimestampField` which, as you may have guessed, Groundhog generated to reference the `sumpPollTimestamp` field of SumpPoll.
+The result will have type `[SumpPoll]`
+
+The documentation for [Groundhog on hackage](http://hackage.haskell.org/package/groundhog) is the best place to go for further information.
+I'll be revising and expanding this tutorial as I get time to do so.
+You can [email me](mailto:edward.amsden@plowtech.net) to let me know of errors or suggestions.
