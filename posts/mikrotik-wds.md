@@ -18,7 +18,7 @@ Dynamic WDS means that any device that connects to the AP will automatically be 
 
 ### **Dynamic WDS Example**
 
-![Phew](DynamicMikroLinks.jpg)
+![Phew](images/DynamicMikroLinks.jpg)
 
 In the image above, the dynamic WDS network has the following topology:
  A is WDS linked to B,C,D, & E
@@ -45,7 +45,7 @@ Static WDS means the network administrator explicitly declares what access point
 
 ### **Static WDS Example**
 
-![Phew](StaticMikroLinks.jpg)
+![Phew](images/StaticMikroLinks.jpg)
 
 In the image above, the static WDS network has the following topology:
  A is WDS linked to B & D
@@ -65,13 +65,13 @@ Starting at A, it can either send data to either B or D, and based on the result
 
 By far, the easiest of the two WDS setups is the dyanmic WDS network. Let's see how a device is added to the network below. It does not matter which device as they are all set up the same.
 
-![Phew](DynamicMikroLinks.jpg)
+![Phew](images/DynamicMikroLinks.jpg)
 
 ### **Bridge & Wireless Interface Settings**
 
 Setting up the dynamic WDS device mainly consists of setting up the bridge and setting up the wireless lan to use the bridge. Here is a snapshot of the settings for 
 
-![Phew](DynamicSettings.jpg)
+![Phew](images/DynamicSettings.jpg)
 
 Following the steps below, we will add a bridge.
  1. On the bridge interface, add a new bridge (in this case bridge1).
@@ -103,18 +103,18 @@ Now lets go over the important settings on the Wireless tab of the Wireless Inte
 
 To complete the set up of the dynamic WDS device, go to the WDS tab of the wireless interface. On this WDS tab, change the WDS Mode to dynamic, and set the WDS Default Bridge to the bridge that was set up earlier.
 
-![Phew](DynamicWDSTab.jpg)
+![Phew](images/DynamicWDSTab.jpg)
 
 ## Static WDS Setup
 
 Now lets look at how to set a static WDS device into an existing static WDS network. Let's see how F is added in to the network below.
 
-![Phew](StaticMikroLinks.jpg)
+![Phew](images/StaticMikroLinks.jpg)
 
 ### **Wireless Interface**
 First, we have to set up the wireless interface (wlan) to the matching network. Here is a snapshot of the settings for the Wireless tab of the wlan interface.
 
-![Phew](WirelessInterface.jpg)
+![Phew](images/WirelessInterface.jpg)
 
 Now lets go over the important settings on the Wireless tab of the Wireless Interface.
 
@@ -143,11 +143,11 @@ Now that the Wireless Interface is set up, the WDS Interfaces have to be setup. 
 ### **Bridge Interface**
 Now, we have to set up a bridge interface to attach the WDS links and the local ethernet port. Here is a snapshot for setting up the bridge.
 
-![Phew](BridgeInterface.jpg)
+![Phew](images/BridgeInterface.jpg)
 
 When creating a new bridge, it is important to define the Admin MAC Address, and it is a good practice to use the Wirless MAC Address as the Admin MAC Address. The Admin MAC Address is the MAC address that the device will identify itself with when communicating through the WDS network. If no Admin MAC Address is chosen, then it will choose on its own which of its available MAC Addresses it will use. That could be either the Ethernet MAC Address or the Wireless MAC Address. Since a WDS Network uses MAC addresses for connectivity, having this value change can cause the device to be disconnected from the network. Now lets look at adding the WDS links to the new bridge.
 
-![Phew](WDSSettings.jpg)
+![Phew](images/WDSSettings.jpg)
 
 In the picture above, the ethernet and wds1 interfaces are connected through the bridge. If non-WDS wireless devices were wanted to be connected, then the wireless interface could be added as well (at least that is my understanding). Each interface must be added on the Port tab of the Bridge page. The Interface is wds that is being added to the bridge, and the bridge is the bridge you would like to add the interface to.
 
