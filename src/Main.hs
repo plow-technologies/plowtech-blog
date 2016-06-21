@@ -68,6 +68,9 @@ main = do
     match "posts/*.gif" $ do
       route idRoute
       compile $ copyFileCompiler
+    match "posts/images/*.jpg" $ do
+      route idRoute
+      compile copyFileCompiler
     create ["index.html"] $ do
       route idRoute
       compile compileMain
