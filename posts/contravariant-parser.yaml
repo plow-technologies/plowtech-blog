@@ -1,0 +1,10 @@
+title: Contravariant Parsers for Ambiguous Data
+author: Scott Murphy
+created: 2016-07-02
+description: >-
+  Building parsers for ambiguous data.
+tags:
+  - Haskell
+  - Parsing
+  - Contravariant
+  
