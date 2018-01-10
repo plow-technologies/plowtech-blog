@@ -75,8 +75,8 @@ in plowtech-blog-master)
 
       printf "\n"
       echo "case match plowtech-blog-master"
-      stack clean plowtech-blog
-      stack test
+      stack exec plowtech-blog-exec clean
+      stack exec plowtech-blog-exec build
       stack exec plowtech-blog-exec deploy;;
 
    *)
