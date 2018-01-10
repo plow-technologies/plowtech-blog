@@ -1,3 +1,4 @@
+[![Build Status](https://jenkins.plowtech.net/buildStatus/icon?job=plowtech-blog)](https://jenkins.plowtech.net/job/plowtech-blog/)
 # plowtech-blog
 
 Static blog built using Hakyll
@@ -5,27 +6,18 @@ Static blog built using Hakyll
 ## Installation
 
 ```
-cabal sandbox init
-cabal configure
-cabal install
+stack test
 ```
 
 ## Usage
 
 For development you can use
 ```
-cabal run watch
+stack exec plowtech-blog-exec watch
 ```
-
-or
-
-```
-cabal run build
-```
-
 
 to clean the cache run
 
 ```
-cabal run clean
+stack clean plowtech-blog
 ```

@@ -43,3 +43,6 @@ tramp
 
 # cask packages
 .cask/
+.stack-work/
+/global-stack.yaml
+/oldstack.yaml
