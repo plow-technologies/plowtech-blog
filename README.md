@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.plowtech.net/buildStatus/icon?job=plowtech-blog)](https://jenkins.plowtech.net/job/plowtech-blog/)
+
 # plowtech-blog
 
 Static blog built using Hakyll
